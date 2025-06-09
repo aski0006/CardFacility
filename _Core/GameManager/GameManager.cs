@@ -18,6 +18,31 @@ namespace _Core.GameManager {
         private FSM fsm;
         public GameState CurrentGameState { get; private set; }
 
+        #region Debug 按钮组
+
+        [Button("切换到开始状态")]
+        public void ChangeToGameStartState() {
+            ChangeState<GameStartState>();
+        }
+        [Button("切换到加载状态")]
+        public void ChangeToGameLoadingState() {
+            ChangeState<GameLoadingState>();
+        }
+        [Button("切换到运行状态")]
+        public void ChangeToGameRunningState() {
+            ChangeState<GameRunningState>();
+        }
+        [Button("切换到暂停状态")]
+        public void ChangeToGamePausedState() {
+            ChangeState<GamePausedState>();
+        }
+        [Button("切换到结束状态")]
+        public void ChangeToGameOverState() {
+            ChangeState<GameOverState>();
+        }
+        [Button("切换到开始状态")]
+
+        #endregion
         protected override void Awake() {
             base.Awake();
             fsm = new FSM(DEBUG);
@@ -42,7 +67,7 @@ namespace _Core.GameManager {
         }
 
         private void _fsmDebugCallback(object obj) {
-            fsm.SetDebug(DEBUG);
+            fsm?.SetDebug(DEBUG);
         }
     }
 }
