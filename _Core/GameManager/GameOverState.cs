@@ -1,14 +1,15 @@
 using _Core._interface;
 
 namespace _Core.GameManager {
-    public class GameOverState : IFSMState {
-        public void OnEnter() {
+    public class GameOverState : FSMState {
+        public GameOverState(FSM fsm) : base(fsm) { }
+        public override void OnEnter() {
             EventBus.Instance.Publish(GameState.GameOver, true);
         }
-        public void OnUpdate() { }
-        public void OnExit() {
+        public override void OnUpdate() { }
+        public override void OnExit() {
             EventBus.Instance.Publish(GameState.GameOver, false);
         }
-        public void OnFixedUpdate() { }
+        public override void OnFixedUpdate() { }
     }
 }

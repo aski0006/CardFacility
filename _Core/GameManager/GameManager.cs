@@ -21,11 +21,11 @@ namespace _Core.GameManager {
         protected override void Awake() {
             base.Awake();
             fsm = new FSM(DEBUG);
-            fsm.RegisterState<GameStartState>(new GameStartState());
-            fsm.RegisterState<GameLoadingState>(new GameLoadingState());
-            fsm.RegisterState<GameRunningState>(new GameRunningState());
-            fsm.RegisterState<GamePausedState>(new GamePausedState());
-            fsm.RegisterState<GameOverState>(new GameOverState());
+            fsm.RegisterState<GameStartState>(new GameStartState(fsm));
+            fsm.RegisterState<GameLoadingState>(new GameLoadingState(fsm));
+            fsm.RegisterState<GameRunningState>(new GameRunningState(fsm));
+            fsm.RegisterState<GamePausedState>(new GamePausedState(fsm));
+            fsm.RegisterState<GameOverState>(new GameOverState(fsm));
             fsm.ChangeState<GameStartState>();
         }
 
