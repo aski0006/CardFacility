@@ -6,5 +6,6 @@
         Containment, // 收容区
         Processing, // 加工区
         Purification, // 净化区
+        None, // 无
     }
 }

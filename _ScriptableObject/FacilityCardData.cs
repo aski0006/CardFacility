@@ -17,7 +17,7 @@ namespace _ScriptableObject {
 
         /// <summary>
         /// 构建设施所需的资源成本列表。
-        /// 每个元素是一个<FacilityResourceCost>对象，包含资源类型和数量。
+        /// 每个元素是一个FacilityResourceCost对象，包含资源类型和数量。
         /// </summary>
         [SerializeField] private List<FacilityResourceCost> _buildCost = new List<FacilityResourceCost>();
 
