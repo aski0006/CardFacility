@@ -55,16 +55,6 @@ namespace _Core
                     localPosition = Vector3.zero,
                 },
             };
-
-            // 创建结束空物体
-            GameObject endObject = new GameObject(objName)
-            {
-                transform =
-                {
-                    parent = transform.parent,
-                    localPosition = Vector3.zero,
-                },
-            };
         }
     }
 }

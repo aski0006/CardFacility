@@ -1,5 +1,7 @@
 ﻿using _Card._RealCard._Facility;
 using System.Collections.Generic;
+using System.Linq;
+using _Enums;
 using UnityEngine;
 
 namespace _Core {
@@ -32,10 +34,25 @@ namespace _Core {
         }
 
         /// <summary>
+        /// 拓展整个网格
+        /// </summary>
+        /// <param name="deltaX">横向扩展量</param>
+        /// <param name="deltaY">纵向扩展量</param>
+        public void ExpandGrid(int deltaX, int deltaY) {
+            _gridWidth += deltaX;
+            _gridHeight += deltaY;
+        }
+
+
+
+
+
+        /// <summary>
         /// 放置地基设施
         /// </summary>
         public bool PlaceFoundation(Vector3 worldPosition, Foundation foundation) {
             Vector3Int gridPosition = _grid.WorldToCell(worldPosition);
+            Vector3 alignedPosition = _grid.GetCellCenterWorld(gridPosition);
 
             // 检查是否可以放置（地基可以重叠）
             if (!CanPlaceFacility(gridPosition, foundation))
@@ -43,7 +60,7 @@ namespace _Core {
 
             // 设置地基位置
             foundation.transform.position = _grid.CellToWorld(gridPosition);
-            foundation.FacilityCenter = new Vector2Int(gridPosition.x, gridPosition.y);
+            foundation.CurrentFacilityZoneCenter = new Vector2Int(gridPosition.x, gridPosition.y);
 
             // 如果是新的地基平面，设置为活动地基
             if (_activeFoundation == null)
@@ -51,7 +68,7 @@ namespace _Core {
 
             // 更新占用信息
             MarkCellsAsOccupied(gridPosition, foundation, false);
-
+            foundation.transform.position = alignedPosition;
             return true;
         }
 
@@ -78,7 +95,7 @@ namespace _Core {
 
             // 设置设施位置
             facility.transform.position = _grid.CellToWorld(gridPosition);
-            facility.FacilityCenter = new Vector2Int(gridPosition.x, gridPosition.y);
+            facility.CurrentFacilityZoneCenter = new Vector2Int(gridPosition.x, gridPosition.y);
 
             // 更新占用信息
             MarkCellsAsOccupied(gridPosition, facility, true);
@@ -126,7 +143,34 @@ namespace _Core {
             // 对于其他设施，检查是否在地基上且没有冲突
             return IsFoundationCell(gridPosition) && !IsCellOccupied(gridPosition);
         }
+        public void RecycleFoundation(Foundation foundation) {
+            if (foundation == null || _activeFoundation != foundation) return;
 
+            // 清除地基关联的网格区域
+            Vector2Int center = _activeFoundation.CurrentFacilityZoneSize;
+            Vector2Int size = _activeFoundation.FacilitySize;
+            Vector2Int offset = size / 2;
+
+            for (int x = 0; x < size.x; x++) {
+                for (int y = 0; y < size.y; y++) {
+                    Vector3Int cell = new Vector3Int(
+                        center.x - offset.x + x,
+                        center.y - offset.y + y,
+                        0);
+
+                    // 移除此地基的所有区域标记
+                    foreach (var region in _regionCells.Keys.ToList()) {
+                        _regionCells[region].Remove(cell);
+                    }
+                }
+            }
+
+            // 清除占用信息
+            _activeFoundation = null;
+
+            // 回收游戏对象
+            Destroy(foundation.gameObject);
+        }
         private void MarkCellsAsOccupied(Vector3Int center, BaseFacility facility, bool isExclusive) {
             Vector2Int size = facility.FacilitySize;
             Vector2Int offset = size / 2;
@@ -153,7 +197,7 @@ namespace _Core {
             if (_activeFoundation == null) return;
 
             // 重新标记活动地基区域
-            Vector2Int center = _activeFoundation.FacilityCenter;
+            Vector2Int center = _activeFoundation.CurrentFacilityZoneSize;
             Vector2Int size = _activeFoundation.FacilitySize;
             Vector2Int offset = size / 2;
 
@@ -175,15 +219,15 @@ namespace _Core {
             // （在实际实现中，这里可能需要清除地基数据结构）
         }
 
-        private bool IsWithinGrid(Vector3Int position, Vector2Int size) {
+        public bool IsWithinGrid(Vector3Int position, Vector2Int size) {
             Vector2Int offset = size / 2;
             int minX = position.x - offset.x;
             int maxX = position.x + offset.x;
             int minY = position.y - offset.y;
             int maxY = position.y + offset.y;
 
-            return minX >= 0 && maxX < _gridWidth &&
-                minY >= 0 && maxY < _gridHeight;
+            return minX >= -_gridWidth && maxX < _gridWidth &&
+                minY >= -_gridHeight && maxY < _gridHeight;
         }
 
         private bool IsCellOccupied(Vector3Int cell) {
@@ -197,7 +241,7 @@ namespace _Core {
         }
 
         private bool IsCellInFacilityRange(Vector3Int cell, BaseFacility facility) {
-            Vector2Int center = facility.FacilityCenter;
+            Vector2Int center = facility.CurrentFacilityZoneSize;
             Vector2Int size = facility.FacilitySize;
             Vector2Int offset = size / 2;
 
@@ -213,5 +257,15 @@ namespace _Core {
         public List<Vector3Int> GetRegionCells(RegionType regionType) {
             return _regionCells.ContainsKey(regionType) ? _regionCells[regionType] : new List<Vector3Int>();
         }
+
+        #region Gizmo
+
+        private void OnDrawGizmosSelected() {
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireCube(transform.position, new Vector3(_gridWidth, _gridHeight, 1));
+        }
+
+        #endregion
+        public Grid GetGrid() => _grid;
     }
 }

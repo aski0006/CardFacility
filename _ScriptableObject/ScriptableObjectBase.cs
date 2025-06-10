@@ -31,8 +31,11 @@ namespace _ScriptableObject {
         /// 获取已设置的菜单名称。
         /// </summary>
         /// <returns>菜单名称字符串</returns>
-        public string GetMenuName() {
-            return menuName;
+        public string MenuName {
+            get {
+                if(string.IsNullOrEmpty(menuName)) SetMenuName();
+                return menuName;
+            }
         }
     }
 }

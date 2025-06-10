@@ -1,15 +1,11 @@
-﻿using _Card._RealCard._Resource;
+﻿using _Enums;
+using _ScriptableObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace _Card._RealCard._Facility {
-    public enum RegionType {
-        Containment, // 收容区
-        Processing, // 加工区
-        Purification // 净化区
-    }
 
     [Serializable]
     public class FacilityResourceCost {
@@ -21,39 +17,18 @@ namespace _Card._RealCard._Facility {
     }
 
     public abstract class BaseFacility : BaseCard {
-        [SerializeField] private Vector2Int facilitySize;
-        [SerializeField] private Vector2Int facilityCenter;
-        [SerializeField] private List<FacilityResourceCost> buildCost = new List<FacilityResourceCost>();
-        [SerializeField] private bool isActive = true;
+        public Vector2Int FacilitySize => ((FacilityCardData)CardData).FacilitySize;
+        public IReadOnlyCollection<FacilityResourceCost> BuildCost => ((FacilityCardData)CardData).BuildCost;
 
-        #region 属性
+        public Vector2Int CurrentFacilityZoneSize { get; set; }
+        public Vector2Int CurrentFacilityZoneCenter { get; set; }
 
-        public Vector2Int FacilitySize {
-            get => facilitySize;
-            set => facilitySize = value;
+        protected override void Awake() {
+            base.Awake();
+            CurrentFacilityZoneSize = FacilitySize;
         }
-        public Vector2Int FacilityCenter {
-            get => facilityCenter;
-            set => facilityCenter = value;
-        }
-        public IReadOnlyCollection<FacilityResourceCost> BuildCost {
-            get => buildCost.AsReadOnly();
-            set => buildCost = value.ToList();
-        }
-        public bool IsActive {
-            get => isActive;
-            set => isActive = value;
-        }
-
-        #endregion
-
-        public void ResetFacilityZoneSize(int deltaX, int deltaY) {
-            this.facilitySize.x += deltaX;
-            this.facilitySize.y += deltaY;
-        }
+        public virtual void ResetFacilityZoneSize(int deltaX, int deltaY) { }
         public override void ApplyCardEffect() { }
         public override void RemoveCardEffect() { }
-        public override void OnCardPlace() { }
-        public override void OnCardRemove() { }
     }
 }

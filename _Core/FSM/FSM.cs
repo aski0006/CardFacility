@@ -3,7 +3,7 @@ using _Utils;
 using System;
 using System.Collections.Generic;
 
-namespace _Core {
+namespace _Core.FSM {
     /// <summary>
     /// 状态机管理类，用于管理不同状态之间的切换与更新。
     /// </summary>
@@ -71,8 +71,20 @@ namespace _Core {
                 return;
             }
             currentState?.OnExit();
+            IFSMState tmpDebugState = currentState;
             currentState = states[typeof(T)];
-            currentState.OnEnter();
+            currentState?.OnEnter();
+            #if UNITY_EDITOR
+            if (debug)
+                InfoBuilder.Create()
+                    .AppendLine("状态机信息：")
+                    .Append("切换状态：")
+                    .Append(tmpDebugState?.GetType().Name)
+                    .AppendSpaceText("Exit ->")
+                    .Append(currentState?.GetType().Name)
+                    .AppendSpaceText("Enter ->")
+                    .Log();
+            #endif
         }
 
         /// <summary>
@@ -106,7 +118,7 @@ namespace _Core {
             }
             currentState.OnFixedUpdate();
         }
-        
+
         /// <summary>
         /// 清理状态机资源。
         /// </summary>
@@ -114,7 +126,7 @@ namespace _Core {
             currentState = null;
             states.Clear();
         }
-        
+
         /// <summary>
         /// 设置调试模式。
         /// </summary>
@@ -122,5 +134,6 @@ namespace _Core {
         public void SetDebug(bool enable) {
             debug = enable;
         }
+        public bool GetDebug() => debug;
     }
 }

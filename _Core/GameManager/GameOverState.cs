@@ -1,8 +1,9 @@
 using _Core._interface;
+using _Core.FSM;
 
 namespace _Core.GameManager {
     public class GameOverState : FSMState {
-        public GameOverState(FSM fsm) : base(fsm) { }
+        public GameOverState(FSM.FSM fsm) : base(fsm) { }
         public override void OnEnter() {
             EventBus.Instance.Publish(GameState.GameOver, true);
         }

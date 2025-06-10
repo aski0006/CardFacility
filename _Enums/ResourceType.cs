@@ -1,4 +1,4 @@
-﻿namespace _Card._RealCard._Resource {
+﻿namespace _Enums{
     public enum ResourceType {
         ConceptShard, // 概念碎片(CS)
         PureLogic, // 纯化逻辑(PL)

@@ -1,9 +1,10 @@
 using _Core._interface;
+using _Core.FSM;
 
 namespace _Core.GameManager {
     public class GameLoadingState : FSMState {
 
-        public GameLoadingState(FSM fsm) : base(fsm) { }
+        public GameLoadingState(FSM.FSM fsm) : base(fsm) { }
         public override void OnEnter() {
             EventBus.Instance.Publish(GameState.GameLoading, true);
         }
