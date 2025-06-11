@@ -64,7 +64,7 @@ namespace _UI._Card {
         /// 包括名称、描述、类型、稀有度颜色和卡片图像
         /// </summary>
         /// <param name="card">包含卡片信息的BaseCard对象</param>
-        public void SetBasicCardInfo(BaseCard card) {
+        public void SetBasicCardInfo(ICardData card) {
             cardNameText.text = card.CardName;
             cardDescriptionText.text = card.CardDescription;
             cardTypeText.text = card.CardType.GetDescription();

@@ -18,7 +18,8 @@ namespace _Core {
         private Dictionary<Vector3Int, BaseFacility> _occupiedCells = new Dictionary<Vector3Int, BaseFacility>();
         private Dictionary<RegionType, List<Vector3Int>> _regionCells = new Dictionary<RegionType, List<Vector3Int>>();
         private Foundation _activeFoundation;
-
+        public int GridWidth => _gridWidth;
+        public int GridHeight => _gridHeight;
         protected override void Awake() {
             base.Awake();
             InitializeGrid();

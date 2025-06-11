@@ -53,8 +53,8 @@ namespace _UI._CommonUIComponents
         private RectTransform rectTransform;
         private Canvas canvas;
         private Vector2 originalPosition;
-        private GridSystem gridSystem; // 新增：网格系统引用
-
+        private GridSystem gridSystem;
+        private CameraDragFollow _cameraDragFollow;
         /// <summary>
         /// 初始化组件并获取必要的引用。
         /// </summary>
@@ -64,6 +64,14 @@ namespace _UI._CommonUIComponents
             canvas = GetComponentInParent<Canvas>();
             originalPosition = rectTransform.anchoredPosition;
             gridSystem = FindFirstObjectByType<GridSystem>();
+            if (Camera.main != null)
+            {
+                _cameraDragFollow = Camera.main.GetComponent<CameraDragFollow>();
+                if (_cameraDragFollow == null)
+                {
+                    _cameraDragFollow = Camera.main.gameObject.AddComponent<CameraDragFollow>();
+                }
+            }
         }
 
         /// <summary>
@@ -84,6 +92,7 @@ namespace _UI._CommonUIComponents
         public void OnBeginDrag(PointerEventData eventData)
         {
             onBeginDrag?.Invoke(eventData);
+            _cameraDragFollow?.OnBeginDrag();
         }
 
         /// <summary>
@@ -165,6 +174,7 @@ namespace _UI._CommonUIComponents
         public void OnEndDrag(PointerEventData eventData)
         {
             onEndDrag?.Invoke(eventData);
+            _cameraDragFollow?.OnEndDrag();
         }
 
         /// <summary>

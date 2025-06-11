@@ -17,18 +17,6 @@ namespace _Core {
         private readonly object _regionLock = new object();
 
         #region 资源定义
-
-        /// <summary>
-        /// 核心资源类型
-        /// </summary>
-        public enum ResourceType {
-            ConceptShards, // 概念碎片 (CS)
-            PurifiedLogic, // 纯化逻辑 (PL)
-            RealityAnchors, // 现实稳定锚 (RA)
-            EntropyPollution, // 熵污染 (EP)
-            CognitiveLoad // 认知负荷 (CL)
-        }
-
         /// <summary>
         /// 区域资源数据结构
         /// </summary>
@@ -189,7 +177,7 @@ namespace _Core {
         /// 获取指定资源类型的当前数量
         /// </summary>
         public float GetResource(ResourceType type) {
-            return _resources.TryGetValue(type, out var value) ? value : 0f;
+            return _resources.GetValueOrDefault(type, 0f);
         }
 
         /// <summary>

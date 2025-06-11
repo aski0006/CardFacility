@@ -1,4 +1,5 @@
-﻿using _Enums;
+﻿using _Card;
+using _Enums;
 using _Utils;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ namespace _ScriptableObject {
     /// 卡牌数据基类，用于存储卡牌的基础信息和属性。
     /// </summary>
     [NotShowInDatabase]
-    public abstract class CardDataBase : ScriptableObjectBase {
+    public abstract class CardDataBase : ScriptableObjectBase , ICardData{
         [SerializeField] protected int _cardId;
         [SerializeField] protected string _cardName;
         [SerializeField] protected string _cardDescription;
